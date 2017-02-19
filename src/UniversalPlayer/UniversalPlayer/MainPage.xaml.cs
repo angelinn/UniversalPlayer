@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using UniversalPlayer.Pages;
+using UniversalPlayer.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -25,11 +28,12 @@ namespace UniversalPlayer
     public sealed partial class MainPage : Page
     {
         private static bool loaded;
+        public MainViewModel MainViewModel { get; set; } = new MainViewModel();
         public MainPage()
         {
             this.InitializeComponent();
 
-
+            DataContext = MainViewModel;
             Loaded += MainPage_Loaded;
         }
 
@@ -39,6 +43,15 @@ namespace UniversalPlayer
             {
                 Frame.Navigate(typeof(LoadingPage));
                 loaded = true;
+            }
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (e.Parameter is List<StorageFile>)
+            {
+                foreach (StorageFile song in e.Parameter as List<StorageFile>)
+                    MainViewModel.Songs.Add(song);
             }
         }
     }

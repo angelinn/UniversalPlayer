@@ -10,6 +10,8 @@ namespace UniversalPlayer.ViewModels
 {
     public class LoadingViewModel
     {
+        public List<StorageFile> Files { get; set; }
+
         public async Task LoadInitialMusic()
         {
             StorageLibrary music = await StorageLibrary.GetLibraryAsync(KnownLibraryId.Music);
@@ -17,7 +19,7 @@ namespace UniversalPlayer.ViewModels
             query.FolderDepth = FolderDepth.Deep;
 
             var files = await KnownFolders.MusicLibrary.CreateFileQueryWithOptions(query).GetFilesAsync();
-            var list = files.ToList();
+            Files = files.ToList();
         }
     }
 }

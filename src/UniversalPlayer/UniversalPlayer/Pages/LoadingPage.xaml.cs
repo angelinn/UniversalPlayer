@@ -35,7 +35,7 @@ namespace UniversalPlayer.Pages
         private async void LoadingPage_Loaded(object sender, RoutedEventArgs e)
         {
             await LoadingViewModel.LoadInitialMusic();
-            Frame.Navigate(typeof(MainPage));
+            Frame.Navigate(typeof(MainPage), LoadingViewModel.Files);
         }
     }
 }
