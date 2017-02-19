@@ -11,7 +11,7 @@
         <ListView ItemsSource="{Binding Songs}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding DisplayName}" Foreground="White" />
+                    <TextBlock Text="{Binding Properties.Title}" Foreground="White" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

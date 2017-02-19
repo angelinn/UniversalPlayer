@@ -48,9 +48,9 @@ namespace UniversalPlayer
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (e.Parameter is List<StorageFile>)
+            if (e.Parameter is List<SongViewModel>)
             {
-                foreach (StorageFile song in e.Parameter as List<StorageFile>)
+                foreach (SongViewModel song in e.Parameter as List<SongViewModel>)
                     MainViewModel.Songs.Add(song);
             }
         }

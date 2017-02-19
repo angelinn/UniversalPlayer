@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.Storage.FileProperties;
 using Windows.Storage.Search;
 
 namespace UniversalPlayer.ViewModels
 {
     public class LoadingViewModel
     {
-        public List<StorageFile> Files { get; set; }
+        public List<SongViewModel> Songs { get; set; } = new List<SongViewModel>();
 
         public async Task LoadInitialMusic()
         {
@@ -19,7 +20,14 @@ namespace UniversalPlayer.ViewModels
             query.FolderDepth = FolderDepth.Deep;
 
             var files = await KnownFolders.MusicLibrary.CreateFileQueryWithOptions(query).GetFilesAsync();
-            Files = files.ToList();
+            foreach (StorageFile file in files)
+            {
+                Songs.Add(new SongViewModel
+                {
+                    FileHandle = file,
+                    Properties = await file.Properties.GetMusicPropertiesAsync()
+                });
+            }
         }
     }
 }
