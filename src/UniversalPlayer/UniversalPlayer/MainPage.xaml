@@ -6,7 +6,29 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:cv="using:UniversalPlayer.Converters"
     mc:Ignorable="d">
+
+    <Page.Resources>
+        <cv:DurationConverter x:Key="DurationConverter" />
+
+        <DataTemplate x:Key="SongTemplate">
+            <Grid DataContext="{Binding Properties}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="60" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="{Binding Title}" Foreground="White" />
+                    <TextBlock Text="{Binding Artist}" Foreground="LightGray" FontSize="12"/>
+                </StackPanel>
+
+                <TextBlock Grid.Column="2" Foreground="LightGray" Text="{Binding Duration, Converter={StaticResource DurationConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14" />
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <toolkit:HamburgerMenu DisplayMode="Inline" >
@@ -15,18 +37,18 @@
                     <RowDefinition Height="50" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                
+
                 <TextBlock Text="Universal Player" VerticalAlignment="Center" Margin="60,0,0,0" />
-                
-                <ListView ItemsSource="{Binding Songs}" Grid.Row="1">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel DataContext="{Binding Properties}">
-                                <TextBlock Text="{Binding Title}" Foreground="White" />
-                                <TextBlock Text="{Binding Artist}" Foreground="LightGray" FontSize="12"/>
-                            </StackPanel> 
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
+
+                <ListView ItemsSource="{Binding Songs}"
+                          ItemTemplate="{StaticResource SongTemplate}"
+                          Grid.Row="1">
+
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
                 </ListView>
             </Grid>
         </toolkit:HamburgerMenu>
