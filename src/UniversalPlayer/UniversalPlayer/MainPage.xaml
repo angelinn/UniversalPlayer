@@ -5,15 +5,30 @@
     xmlns:local="using:UniversalPlayer"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <ListView ItemsSource="{Binding Songs}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Properties.Title}" Foreground="White" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <toolkit:HamburgerMenu DisplayMode="Inline" >
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                
+                <TextBlock Text="Universal Player" VerticalAlignment="Center" Margin="60,0,0,0" />
+                
+                <ListView ItemsSource="{Binding Songs}" Grid.Row="1">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel DataContext="{Binding Properties}">
+                                <TextBlock Text="{Binding Title}" Foreground="White" />
+                                <TextBlock Text="{Binding Artist}" Foreground="LightGray" FontSize="12"/>
+                            </StackPanel> 
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </toolkit:HamburgerMenu>
     </Grid>
 </Page>

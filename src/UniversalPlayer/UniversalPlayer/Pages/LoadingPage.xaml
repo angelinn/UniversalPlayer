@@ -8,9 +8,12 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Text="Loading..." Foreground="White" />
-            <ProgressBar  IsIndeterminate="True"/>
+        </StackPanel>
+        
+        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
+            <ProgressBar IsIndeterminate="True"/>
         </StackPanel>
     </Grid>
 </Page>
