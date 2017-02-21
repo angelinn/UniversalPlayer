@@ -15,7 +15,6 @@
         <DataTemplate x:Key="SongTemplate">
             <Grid DataContext="{Binding Properties}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="60" />
                 </Grid.ColumnDefinitions>
@@ -33,6 +32,7 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <toolkit:HamburgerMenu DisplayMode="Inline" >
             <Grid>
+
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50" />
                     <RowDefinition Height="*" />
@@ -42,11 +42,14 @@
 
                 <ListView ItemsSource="{Binding Songs}"
                           ItemTemplate="{StaticResource SongTemplate}"
+                          SelectionChanged="ListView_SelectionChanged"
+                          SelectionMode="Single"
                           Grid.Row="1">
 
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Height" Value="50" />
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
