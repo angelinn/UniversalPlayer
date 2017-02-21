@@ -31,28 +31,13 @@ namespace UniversalPlayer
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private static bool loaded;
-        private MediaPlayer player = new MediaPlayer();
         public MainViewModel MainViewModel { get; set; } = new MainViewModel();
 
         public MainPage()
         {
             this.InitializeComponent();
 
-
-            var _smtc = SystemMediaTransportControls.GetForCurrentView();
-            _smtc.IsEnabled = true;
-            _smtc.IsPlayEnabled = true;
-            _smtc.IsPauseEnabled = true;
-            _smtc.IsStopEnabled = true;
-            _smtc.IsNextEnabled = true;
-            _smtc.IsPreviousEnabled = true;
-            _smtc.PlaybackStatus = MediaPlaybackStatus.Closed;
-            _smtc.AutoRepeatMode = MediaPlaybackAutoRepeatMode.Track;
-            
-
             DataContext = MainViewModel;
-            
             Loaded += MainPage_Loaded;
         }
 
@@ -65,24 +50,27 @@ namespace UniversalPlayer
             }
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             if (e.Parameter is List<SongViewModel>)
             {
                 foreach (SongViewModel song in e.Parameter as List<SongViewModel>)
+                {
                     MainViewModel.Songs.Add(song);
+                    MainViewModel.MediaPlaybackList.Items.Add(await MediaManager.CreateMediaPlaybackItemAsync(song.FileHandle));
+                }
+
+                player.Source = MainViewModel.MediaPlaybackList;
             }
         }
 
-        private async void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SongViewModel vm = e.AddedItems[0] as SongViewModel;
-            StorageFile song = vm.FileHandle;
-
-            MediaPlaybackItem item = await MediaManager.CreateMediaPlaybackItemAsync(song);
-            
-            player.Source = item;
+            MainViewModel.MediaPlaybackList.MoveTo((uint)(sender as ListView).SelectedIndex);
             player.Play();
         }
+
+        private static bool loaded;
+        private MediaPlayer player = new MediaPlayer();
     }
 }

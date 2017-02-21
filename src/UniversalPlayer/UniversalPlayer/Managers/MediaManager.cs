@@ -15,6 +15,7 @@ namespace UniversalPlayer.Managers
         public static async Task<MediaPlaybackItem> CreateMediaPlaybackItemAsync(StorageFile song)
         {
             MediaPlaybackItem item = new MediaPlaybackItem(MediaSource.CreateFromStorageFile(song));
+
             MediaItemDisplayProperties properties = item.GetDisplayProperties();
             MusicProperties musicProperties = await song.Properties.GetMusicPropertiesAsync();
 
@@ -26,5 +27,4 @@ namespace UniversalPlayer.Managers
             return item;
         }
     }
-
 }
