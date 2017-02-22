@@ -20,11 +20,18 @@
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
+      <Extensions>
+        <Extension Category="windows.backgroundTasks" EntryPoint="UniversalPlayer.BackgroundTask.BackgroundAudioTask">
+          <BackgroundTasks>
+            <Task Type="audio" />
+            <Task Type="systemEvent" />
+          </BackgroundTasks>
+        </Extension>
+      </Extensions>
     </Application>
   </Applications>
   <Capabilities>
     <Capability Name="internetClient" />
     <uap:Capability Name="musicLibrary" />
-    <uap3:Capability Name="backgroundMediaPlayback" />
   </Capabilities>
 </Package>
