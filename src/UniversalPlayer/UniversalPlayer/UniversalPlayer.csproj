@@ -139,6 +139,16 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UniversalPlayer.BackgroundTask\UniversalPlayer.BackgroundTask.csproj">
+      <Project>{92b4bf17-61f0-4ef0-8627-8492d391eee5}</Project>
+      <Name>UniversalPlayer.BackgroundTask</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UniversalPlayer.Communication\UniversalPlayer.Communication.csproj">
+      <Project>{9C0D9A6D-EA63-48A5-82CF-A07D01FF1FF7}</Project>
+      <Name>UniversalPlayer.Communication</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

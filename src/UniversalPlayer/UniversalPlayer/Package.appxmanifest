@@ -24,7 +24,6 @@
         <Extension Category="windows.backgroundTasks" EntryPoint="UniversalPlayer.BackgroundTask.BackgroundAudioTask">
           <BackgroundTasks>
             <Task Type="audio" />
-            <Task Type="systemEvent" />
           </BackgroundTasks>
         </Extension>
       </Extensions>

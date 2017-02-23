@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using UniversalPlayer.Communication.Models;
 using Windows.ApplicationModel.Background;
 using Windows.Foundation;
 using Windows.Media;
@@ -44,7 +45,7 @@ namespace UniversalPlayer.BackgroundTask
             if (item == null)
                 return null; // no track playing
 
-            return item.Source.CustomProperties[TrackIdKey] as Uri;
+            return item.Source.CustomProperties[TitleKey] as Uri;
         }
         #endregion
 
@@ -169,7 +170,8 @@ namespace UniversalPlayer.BackgroundTask
             smtc.DisplayUpdater.Type = MediaPlaybackType.Music;
             smtc.DisplayUpdater.MusicProperties.Title = item.Source.CustomProperties[TitleKey] as string;
 
-            var albumArtUri = item.Source.CustomProperties[AlbumArtKey] as Uri;
+            //var albumArtUri = item.Source.CustomProperties[AlbumArtKey] as Uri;
+            Uri albumArtUri = null;
             if (albumArtUri != null)
                 smtc.DisplayUpdater.Thumbnail = RandomAccessStreamReference.CreateFromUri(albumArtUri);
             else
@@ -260,7 +262,7 @@ namespace UniversalPlayer.BackgroundTask
                     {
                         // Find the index of the item by name
                         var index = playbackList.Items.ToList().FindIndex(item =>
-                            GetTrackId(item).ToString() == (string)currentTrackId);
+                            item.Source.CustomProperties[TitleKey].ToString() == (string)currentTrackId);
 
                         if (currentTrackPosition == null)
                         {
@@ -325,15 +327,15 @@ namespace UniversalPlayer.BackgroundTask
         {
             // Get the new item
             var item = args.NewItem;
-            Debug.WriteLine("PlaybackList_CurrentItemChanged: " + (item == null ? "null" : GetTrackId(item).ToString()));
+            //Debug.WriteLine("PlaybackList_CurrentItemChanged: " + (item == null ? "null" : GetTrackId(item).ToString()));
 
             // Update the system view
             UpdateUVCOnNewTrack(item);
 
             // Get the current track
             Uri currentTrackId = null;
-            if (item != null)
-                currentTrackId = item.Source.CustomProperties[TrackIdKey] as Uri;
+            //if (item != null)
+               // currentTrackId = item.Source.CustomProperties[TrackIdKey] as Uri;
 
             // Notify foreground of change or persist for later
             if (foregroundAppState == AppState.Active)
@@ -433,7 +435,7 @@ namespace UniversalPlayer.BackgroundTask
             TrackChangedMessage trackChangedMessage;
             if (MessageService.TryParseMessage(e.Data, out trackChangedMessage))
             {
-                var index = playbackList.Items.ToList().FindIndex(i => (Uri)i.Source.CustomProperties[TrackIdKey] == trackChangedMessage.TrackId);
+                var index = playbackList.Items.ToList().FindIndex(i => i.Source.CustomProperties[TitleKey] == trackChangedMessage.TrackId);
                 Debug.WriteLine("Skipping to track " + index);
                 smtc.PlaybackStatus = MediaPlaybackStatus.Changing;
                 playbackList.MoveTo((uint)index);
@@ -452,20 +454,14 @@ namespace UniversalPlayer.BackgroundTask
         /// Create a playback list from the list of songs received from the foreground app.
         /// </summary>
         /// <param name="songs"></param>
-        void CreatePlaybackList(IEnumerable<SongModel> songs)
+        void CreatePlaybackList(List<SongModel> songs)
         {
-            // Make a new list and enable looping
-            playbackList = new MediaPlaybackList();
-            playbackList.AutoRepeatEnabled = true;
-
-            // Add playback items to the list
-            foreach (var song in songs)
+            foreach (SongModel song in songs)
             {
-                var source = MediaSource.CreateFromUri(song.MediaUri);
-                source.CustomProperties[TrackIdKey] = song.MediaUri;
-                source.CustomProperties[TitleKey] = song.Title;
-                source.CustomProperties[AlbumArtKey] = song.AlbumArtUri;
-                playbackList.Items.Add(new MediaPlaybackItem(source));
+                var file = Windows.Storage.StorageFile.GetFileFromPathAsync(song.MediaUri).AsTask().Result;
+                MediaPlaybackItem item = new MediaPlaybackItem(MediaSource.CreateFromStorageFile(file));
+                item.Source.CustomProperties[TitleKey] = song.Title;
+                playbackList.Items.Add(item);
             }
 
             // Don't auto start
