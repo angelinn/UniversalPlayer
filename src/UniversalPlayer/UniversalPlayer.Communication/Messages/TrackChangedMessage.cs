@@ -25,12 +25,12 @@ namespace BackgroundAudioShared.Messages
         {
         }
 
-        public TrackChangedMessage(Uri trackId)
+        public TrackChangedMessage(string trackId)
         {
             this.TrackId = trackId;
         }
 
         [DataMember]
-        public Uri TrackId;
+        public string TrackId;
     }
 }

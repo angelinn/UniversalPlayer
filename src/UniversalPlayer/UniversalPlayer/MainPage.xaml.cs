@@ -92,7 +92,7 @@ namespace UniversalPlayer
             if (!IsMyBackgroundTaskRunning || MediaPlayerState.Closed == player.CurrentState)
             {
                 // First update the persisted start track
-                ApplicationSettingsHelper.SaveSettingsValue(ApplicationSettingsConstants.TrackId, song.Properties.Artist);
+                ApplicationSettingsHelper.SaveSettingsValue(ApplicationSettingsConstants.TrackId, $"{song.Properties.Artist}{song.Properties.Title}");
                 ApplicationSettingsHelper.SaveSettingsValue(ApplicationSettingsConstants.Position, new TimeSpan().ToString());
 
                 // Start task
@@ -101,7 +101,7 @@ namespace UniversalPlayer
             else
             {
                 // Switch to the selected track
-                //MessageService.SendMessageToBackground(new TrackChangedMessage(song.FileHandle.Properties.)));
+                MessageService.SendMessageToBackground(new TrackChangedMessage($"{song.Properties.Artist}{song.Properties.Title}"));
             }
 
             if (MediaPlayerState.Paused == player.CurrentState)
@@ -121,7 +121,7 @@ namespace UniversalPlayer
                 //Send message to initiate playback
                 if (result == true)
                 {
-                    MessageService.SendMessageToBackground(new UpdatePlaylistMessage((MainViewModel.Songs.Select(s => new SongModel { Title = s.Properties.Title, MediaUri = s.FileHandle.Path }).ToList())));
+                    MessageService.SendMessageToBackground(new UpdatePlaylistMessage((MainViewModel.Songs.Select(s => new SongModel { Title = $"{s.Properties.Artist}{s.Properties.Title}", MediaUri = s.FileHandle.Path }).ToList())));
                     MessageService.SendMessageToBackground(new StartPlaybackMessage());
                 }
                 else

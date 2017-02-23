@@ -45,7 +45,7 @@ namespace UniversalPlayer.BackgroundTask
             if (item == null)
                 return null; // no track playing
 
-            return item.Source.CustomProperties[TitleKey] as Uri;
+            return item.Source.CustomProperties[TrackIdKey] as Uri;
         }
         #endregion
 
@@ -168,7 +168,7 @@ namespace UniversalPlayer.BackgroundTask
 
             smtc.PlaybackStatus = MediaPlaybackStatus.Playing;
             smtc.DisplayUpdater.Type = MediaPlaybackType.Music;
-            smtc.DisplayUpdater.MusicProperties.Title = item.Source.CustomProperties[TitleKey] as string;
+            smtc.DisplayUpdater.MusicProperties.Title = item.Source.CustomProperties[TrackIdKey] as string;
 
             //var albumArtUri = item.Source.CustomProperties[AlbumArtKey] as Uri;
             Uri albumArtUri = null;
@@ -262,7 +262,9 @@ namespace UniversalPlayer.BackgroundTask
                     {
                         // Find the index of the item by name
                         var index = playbackList.Items.ToList().FindIndex(item =>
-                            item.Source.CustomProperties[TitleKey].ToString() == (string)currentTrackId);
+                            item.Source.CustomProperties[TrackIdKey].ToString() == (string)currentTrackId);
+
+                        var a = playbackList.Items.First();
 
                         if (currentTrackPosition == null)
                         {
@@ -333,9 +335,9 @@ namespace UniversalPlayer.BackgroundTask
             UpdateUVCOnNewTrack(item);
 
             // Get the current track
-            Uri currentTrackId = null;
-            //if (item != null)
-               // currentTrackId = item.Source.CustomProperties[TrackIdKey] as Uri;
+            string currentTrackId = null;
+            if (item != null)
+                currentTrackId = item.Source.CustomProperties[TrackIdKey] as string;
 
             // Notify foreground of change or persist for later
             if (foregroundAppState == AppState.Active)
@@ -435,7 +437,7 @@ namespace UniversalPlayer.BackgroundTask
             TrackChangedMessage trackChangedMessage;
             if (MessageService.TryParseMessage(e.Data, out trackChangedMessage))
             {
-                var index = playbackList.Items.ToList().FindIndex(i => i.Source.CustomProperties[TitleKey] == trackChangedMessage.TrackId);
+                var index = playbackList.Items.ToList().FindIndex(i => (string)i.Source.CustomProperties[TrackIdKey] == trackChangedMessage.TrackId);
                 Debug.WriteLine("Skipping to track " + index);
                 smtc.PlaybackStatus = MediaPlaybackStatus.Changing;
                 playbackList.MoveTo((uint)index);
@@ -460,7 +462,7 @@ namespace UniversalPlayer.BackgroundTask
             {
                 var file = Windows.Storage.StorageFile.GetFileFromPathAsync(song.MediaUri).AsTask().Result;
                 MediaPlaybackItem item = new MediaPlaybackItem(MediaSource.CreateFromStorageFile(file));
-                item.Source.CustomProperties[TitleKey] = song.Title;
+                item.Source.CustomProperties[TrackIdKey] = song.Title;
                 playbackList.Items.Add(item);
             }
 
