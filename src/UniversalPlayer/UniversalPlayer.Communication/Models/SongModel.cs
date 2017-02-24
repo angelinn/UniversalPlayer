@@ -16,9 +16,15 @@ namespace UniversalPlayer.Communication.Models
         public string Title { get; set; }
 
         [DataMember]
+        public string Artist { get; set; }
+
+        [DataMember]
         public string MediaUri { get; set; }
 
         [DataMember]
         public Uri AlbumArtUri { get; set; }
+
+        [DataMember]
+        public string TrackID { get; set; }
     }
 }
