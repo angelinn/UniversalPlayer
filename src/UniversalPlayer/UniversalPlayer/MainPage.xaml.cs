@@ -46,8 +46,6 @@ namespace UniversalPlayer
 
             DataContext = MainViewModel;
             Loaded += MainPage_Loaded;
-
-            BackgroundMediaPlayer.MessageReceivedFromBackground += OnBackgroundMessage;
         }
 
         private void OnBackgroundMessage(object sender, MediaPlayerDataReceivedEventArgs e)
@@ -103,26 +101,21 @@ namespace UniversalPlayer
                 // Switch to the selected track
                 MessageService.SendMessageToBackground(new TrackChangedMessage($"{song.Properties.Artist}{song.Properties.Title}"));
             }
-
-            if (MediaPlayerState.Paused == player.CurrentState)
-            {
-                player.Play();
-            }
-           
-            //MainViewModel.MediaPlaybackList.MoveTo((uint)(sender as ListView).SelectedIndex);
-            //player.Play();
         }
 
         private void StartBackgroundAudioTask()
         {
+            BackgroundMediaPlayer.MessageReceivedFromBackground += OnBackgroundMessage;
             var startResult = this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 bool result = backgroundAudioTaskStarted.WaitOne(10000);
                 //Send message to initiate playback
                 if (result == true)
                 {
-                    MessageService.SendMessageToBackground(new UpdatePlaylistMessage((MainViewModel.Songs.Select(s => new SongModel { Title = $"{s.Properties.Artist}{s.Properties.Title}", MediaUri = s.FileHandle.Path }).ToList())));
+                    MessageService.SendMessageToBackground(new UpdatePlaylistMessage((MainViewModel.Songs.Select(s => new SongModel { TrackID = $"{s.Properties.Artist}{s.Properties.Title}", Title = s.Properties.Title, Artist = s.Properties.Artist, MediaUri = s.FileHandle.Path }).ToList())));
                     MessageService.SendMessageToBackground(new StartPlaybackMessage());
+
+                    player = BackgroundMediaPlayer.Current;
                 }
                 else
                 {
@@ -160,6 +153,6 @@ namespace UniversalPlayer
         }
 
         private static bool loaded;
-        private MediaPlayer player = BackgroundMediaPlayer.Current;
+        private MediaPlayer player;
     }
 }
