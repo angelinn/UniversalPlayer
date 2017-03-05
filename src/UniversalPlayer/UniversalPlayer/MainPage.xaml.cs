@@ -87,7 +87,7 @@ namespace UniversalPlayer
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var song = e.AddedItems[0] as SongViewModel;
-            if (!IsMyBackgroundTaskRunning || MediaPlayerState.Closed == player.CurrentState)
+            if (!IsMyBackgroundTaskRunning)
             {
                 // First update the persisted start track
                 ApplicationSettingsHelper.SaveSettingsValue(ApplicationSettingsConstants.TrackId, $"{song.Properties.Artist}{song.Properties.Title}");
